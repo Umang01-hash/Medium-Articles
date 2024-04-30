@@ -11,7 +11,7 @@ func main() {
 	app.POST("/shorten", handlers.ShortenURLHandler)
 
 	// Define route for redirecting shortened URL
-	app.GET("/:url", handlers.RedirectHandler)
+	app.GET("/{url}", handlers.RedirectHandler)
 
 	app.Run()
 }

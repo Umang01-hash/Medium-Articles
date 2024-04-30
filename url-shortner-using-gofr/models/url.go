@@ -7,3 +7,7 @@ type Response struct {
 	CustomShort string        `json:"short"`
 	Expiry      time.Duration `json:"expiry"`
 }
+
+type RedirectResponse struct {
+	OriginalURL string `json:"original_url"`
+}

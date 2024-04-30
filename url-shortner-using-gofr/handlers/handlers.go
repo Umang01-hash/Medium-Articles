@@ -82,7 +82,7 @@ func ShortenURLHandler(ctx *gofr.Context) (interface{}, error) {
 
 // RedirectHandler handles the redirection of short URLs
 func RedirectHandler(ctx *gofr.Context) (interface{}, error) {
-	inputURL := ctx.Param("url")
+	inputURL := ctx.PathParam("url")
 
 	// Retrieve URL from Redis based on short code
 	value, err := ctx.Redis.Get(ctx, inputURL).Result()
@@ -95,5 +95,5 @@ func RedirectHandler(ctx *gofr.Context) (interface{}, error) {
 		return nil, err
 	}
 
-	return value, nil
+	return &models.RedirectResponse{OriginalURL: value}, nil
 }
