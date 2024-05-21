@@ -64,7 +64,7 @@ func ShortenURLHandler(ctx *gofr.Context) (interface{}, error) {
 	}
 
 	// Store URL and short code in Redis with expiry
-	err = ctx.Redis.Set(ctx, id, parsedURL, req.Expiry*3600*time.Second).Err()
+	err = ctx.Redis.Set(ctx, id, parsedURL, time.Duration(req.Expiry)*3600*time.Second).Err()
 	if err != nil {
 		ctx.Logger.Errorf("error while inserting data into redis. err : %v", err)
 		return nil, err
