@@ -20,7 +20,7 @@ type Product struct {
 var db *sql.DB
 
 const (
-	createQuery = "INSERT INTO products (id, name, price) VALUES (?, ?, ?)"
+	createQuery = "INSERT INTO products (name, price) VALUES (?, ?)"
 	selectQuery = "SELECT id, name, price FROM products WHERE id = ?"
 )
 
@@ -57,19 +57,21 @@ func main() {
 			})
 		}
 
-		result, err := db.Exec(createQuery, product.ID, product.Name, product.Price)
+		result, err := db.Exec(createQuery, product.Name, product.Price)
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 				"error": fmt.Sprintf("cannot create product : %v", err),
 			})
 		}
 
-		_, err = result.LastInsertId()
+		id, err := result.LastInsertId()
 		if err != nil {
 			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 				"error": "cannot retrieve product ID",
 			})
 		}
+
+		product.ID = int(id)
 
 		return c.Status(fiber.StatusCreated).JSON(product)
 	})
