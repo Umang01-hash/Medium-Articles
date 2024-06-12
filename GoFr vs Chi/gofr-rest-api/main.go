@@ -10,6 +10,7 @@ func main() {
 
 	h := handlers.New()
 
+	app.GET("/books/{id}", h.GetBookByID)
 	app.GET("/books", h.GetAllBooks)
 	app.POST("/books", h.AddBook)
 	app.PUT("/books/{id}", h.UpdateBook)

@@ -31,6 +31,7 @@ func main() {
 
 	r := chi.NewRouter()
 
+	r.Get("/books/{id}", h.GetBookByID)
 	r.Get("/books", h.GetAllBooks)
 	r.Post("/books", h.AddBook)
 	r.Put("/books/{id}", h.UpdateBook)

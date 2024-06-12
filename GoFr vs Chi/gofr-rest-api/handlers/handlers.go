@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"database/sql"
+	"errors"
 	"strconv"
 
 	"gofr.dev/pkg/gofr"
@@ -15,6 +17,25 @@ func New() handler {
 	return handler{}
 }
 
+// GetBookByID retrieves a book by its ID from the database
+func (h handler) GetBookByID(ctx *gofr.Context) (interface{}, error) {
+	id := ctx.PathParam("id")
+	var book models.Book
+
+	row := ctx.SQL.QueryRowContext(ctx, "SELECT id, title, author FROM books WHERE id = $1", id)
+	err := row.Scan(&book.ID, &book.Title, &book.Author)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, http.ErrorEntityNotFound{Name: "book", Value: id}
+		}
+
+		return nil, err
+	}
+
+	return book, nil
+}
+
+// GetAllBooks retrieves all books from the database
 func (h handler) GetAllBooks(ctx *gofr.Context) (interface{}, error) {
 	var books []models.Book
 
@@ -24,6 +45,7 @@ func (h handler) GetAllBooks(ctx *gofr.Context) (interface{}, error) {
 	}
 	defer rows.Close()
 
+	// Iterate over the rows and append each book to the books slice
 	for rows.Next() {
 		var book models.Book
 		if err := rows.Scan(&book.ID, &book.Title, &book.Author); err != nil {
@@ -39,6 +61,7 @@ func (h handler) GetAllBooks(ctx *gofr.Context) (interface{}, error) {
 	return books, nil
 }
 
+// AddBook adds a new book to the database
 func (h handler) AddBook(ctx *gofr.Context) (interface{}, error) {
 	var (
 		book models.Book
@@ -50,6 +73,7 @@ func (h handler) AddBook(ctx *gofr.Context) (interface{}, error) {
 		return nil, err
 	}
 
+	// Insert the new book into the database and return the generated ID
 	row := ctx.SQL.QueryRowContext(ctx, "INSERT INTO books (title, author) VALUES ($1, $2) RETURNING id",
 		book.Title, book.Author)
 	err = row.Scan(&id)
@@ -62,6 +86,7 @@ func (h handler) AddBook(ctx *gofr.Context) (interface{}, error) {
 	return book, nil
 }
 
+// UpdateBook updates an existing book in the database
 func (h handler) UpdateBook(ctx *gofr.Context) (interface{}, error) {
 	id := ctx.PathParam("id")
 	var book models.Book
@@ -82,6 +107,7 @@ func (h handler) UpdateBook(ctx *gofr.Context) (interface{}, error) {
 		return nil, err
 	}
 	if rowsAffected == 0 {
+		// Return a 404 error if no rows were affected (i.e., book not found)
 		return nil, http.ErrorEntityNotFound{Name: "book", Value: id}
 	}
 
@@ -89,6 +115,7 @@ func (h handler) UpdateBook(ctx *gofr.Context) (interface{}, error) {
 	return book, nil
 }
 
+// DeleteBook deletes a book from the database
 func (h handler) DeleteBook(ctx *gofr.Context) (interface{}, error) {
 	id := ctx.PathParam("id")
 
