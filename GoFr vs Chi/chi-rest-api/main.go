@@ -5,11 +5,11 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/chi-rest-api/handlers"
 	"github.com/go-chi/chi/v5"
-
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+
+	"github.com/chi-rest-api/handlers"
 )
 
 func initDB() *gorm.DB {
