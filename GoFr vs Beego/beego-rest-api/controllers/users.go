@@ -14,10 +14,6 @@ type UserController struct {
 	web.Controller
 }
 
-// @Title GetAll
-// @Description get all Users
-// @Success 200 {object} []models.Users
-// @router / [get]
 func (c *UserController) GetAll() {
 	o := orm.NewOrm()
 	var users []*models.Users
@@ -30,12 +26,6 @@ func (c *UserController) GetAll() {
 	}
 }
 
-// @Title Get
-// @Description get User by id
-// @Param	id		path 	string	true		"The key for staticblock"
-// @Success 200 {object} models.Users
-// @Failure 403 :id is empty
-// @router /:id [get]
 func (c *UserController) Get() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
@@ -52,12 +42,6 @@ func (c *UserController) Get() {
 	}
 }
 
-// @Title Create
-// @Description create Users
-// @Param	body		body 	models.Users	true		"body for User content"
-// @Success 200 {int} models.Users.Id
-// @Failure 403 body is empty
-// @router / [post]
 func (c *UserController) Post() {
 	var user models.Users
 
@@ -85,13 +69,6 @@ func (c *UserController) Post() {
 	}
 }
 
-// @Title Update
-// @Description update the User
-// @Param	id		path 	string	true		"The id you want to update"
-// @Param	body		body 	models.Users	true		"body for User content"
-// @Success 200 {object} models.Users
-// @Failure 403 :id is not int
-// @router /:id [put]
 func (c *UserController) Put() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
@@ -122,12 +99,6 @@ func (c *UserController) Put() {
 	}
 }
 
-// @Title Delete
-// @Description delete the User
-// @Param	id		path 	string	true		"The id you want to delete"
-// @Success 200 {string} delete success!
-// @Failure 403 id is empty
-// @router /:id [delete]
 func (c *UserController) Delete() {
 	idStr := c.Ctx.Input.Param(":id")
 	id, _ := strconv.Atoi(idStr)
